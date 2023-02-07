@@ -1,0 +1,177 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    checksum/configuration: 21c96e22113bfda5980c711c981ef520624409c5e3e04bdff1d790d4d1799dce
+  creationTimestamp: "2023-02-06T20:34:47Z"
+  generateName: wordpress-mariadb-
+  labels:
+    app.kubernetes.io/component: primary
+    app.kubernetes.io/instance: wordpress
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mariadb
+    controller-revision-hash: wordpress-mariadb-749d9585d4
+    helm.sh/chart: mariadb-11.4.5
+    statefulset.kubernetes.io/pod-name: wordpress-mariadb-0
+  name: wordpress-mariadb-0
+  namespace: nswordpress
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: StatefulSet
+    name: wordpress-mariadb
+    uid: 446165bc-5eae-4c93-8c07-65f16f4c83fa
+  resourceVersion: "214460"
+  uid: 0b280771-f50f-4093-a92f-a24a0790c98f
+spec:
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: primary
+              app.kubernetes.io/instance: wordpress
+              app.kubernetes.io/name: mariadb
+          topologyKey: kubernetes.io/hostname
+        weight: 1
+  containers:
+  - env:
+    - name: BITNAMI_DEBUG
+      value: "false"
+    - name: MARIADB_ROOT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          key: mariadb-root-password
+          name: wordpress-mariadb
+    - name: MARIADB_USER
+      value: bn_wordpress
+    - name: MARIADB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          key: mariadb-password
+          name: wordpress-mariadb
+    - name: MARIADB_DATABASE
+      value: bitnami_wordpress
+    image: docker.io/bitnami/mariadb:10.6.11-debian-11-r22
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      exec:
+        command:
+        - /bin/bash
+        - -ec
+        - |
+          password_aux="${MARIADB_ROOT_PASSWORD:-}"
+          if [[ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]]; then
+              password_aux=$(cat "$MARIADB_ROOT_PASSWORD_FILE")
+          fi
+          mysqladmin status -uroot -p"${password_aux}"
+      failureThreshold: 3
+      initialDelaySeconds: 120
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    name: mariadb
+    ports:
+    - containerPort: 3306
+      name: mysql
+      protocol: TCP
+    readinessProbe:
+      exec:
+        command:
+        - /bin/bash
+        - -ec
+        - |
+          password_aux="${MARIADB_ROOT_PASSWORD:-}"
+          if [[ -f "${MARIADB_ROOT_PASSWORD_FILE:-}" ]]; then
+              password_aux=$(cat "$MARIADB_ROOT_PASSWORD_FILE")
+          fi
+          mysqladmin status -uroot -p"${password_aux}"
+      failureThreshold: 3
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    resources: {}
+    securityContext:
+      allowPrivilegeEscalation: false
+      privileged: false
+      runAsNonRoot: true
+      runAsUser: 1001
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /bitnami/mariadb
+      name: data
+    - mountPath: /opt/bitnami/mariadb/conf/my.cnf
+      name: config
+      subPath: my.cnf
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  hostname: wordpress-mariadb-0
+  nodeName: gke-cloud-project-37-cloud-project-37-179649c3-nrxm
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    fsGroup: 1001
+  serviceAccount: wordpress-mariadb
+  serviceAccountName: wordpress-mariadb
+  subdomain: wordpress-mariadb
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: data-wordpress-mariadb-0
+  - configMap:
+      defaultMode: 420
+      name: wordpress-mariadb
+    name: config
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2023-02-06T20:34:52Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2023-02-06T20:35:53Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2023-02-06T20:35:53Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2023-02-06T20:34:52Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://6c4b5fdbfd178071c55dca1aa950b9fae88d33073684ed517da98f117ad37fd0
+    image: docker.io/bitnami/mariadb:10.6.11-debian-11-r22
+    imageID: docker.io/bitnami/mariadb@sha256:3daf524619055f29fe16efb7bd903c3dc0ac5a9e6f21c0bde3771381e2c5b1fa
+    lastState: {}
+    name: mariadb
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2023-02-06T20:35:21Z"
+  hostIP: 10.10.0.7
+  phase: Running
+  podIP: 10.200.4.3
+  podIPs:
+  - ip: 10.200.4.3
+  qosClass: BestEffort
+  startTime: "2023-02-06T20:34:52Z"
