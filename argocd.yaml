@@ -1,17 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: guestbook
+  name: wordpress-cd
   namespace: argocd
 spec:
   project: default
+
   source:
-    repoURL: https://github.com/DhiaAmmar99/Cloud-Project.git
-    targetRevision: HEAD
-    path: wordpress
+    chart: bitnami/wordpress
+    repoURL: https://artifacthub.io/packages/helm/bitnami-aks/wordpress 
+    targetRevision: 15.2.13
+    helm:
+      releaseName: my-release
+
   destination:
     server: https://kubernetes.default.svc
     namespace: app-cd
+  
   syncPolicy:
     syncOptions:
     - CreateNamespace=true

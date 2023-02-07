@@ -99,11 +99,11 @@ image:
 
 ## @param wordpressUsername WordPress username
 ##
-wordpressUsername: user
+wordpressUsername: dhia
 ## @param wordpressPassword WordPress user password
 ## Defaults to a random 10-character alphanumeric string if not set
 ##
-wordpressPassword: ""
+wordpressPassword: dhia
 ## @param existingSecret Name of existing secret containing WordPress credentials
 ## NOTE: Must contain key `wordpress-password`
 ## NOTE: When it's set, the `wordpressPassword` parameter is ignored
@@ -590,7 +590,7 @@ service:
 ingress:
   ## @param ingress.enabled Enable ingress record generation for WordPress
   ##
-  enabled: false
+  enabled: true
   ## @param ingress.pathType Ingress path type
   ##
   pathType: ImplementationSpecific
