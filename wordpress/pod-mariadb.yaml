@@ -1,8 +1,6 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  annotations:
-    checksum/configuration: 21c96e22113bfda5980c711c981ef520624409c5e3e04bdff1d790d4d1799dce
   generateName: wordpress-mariadb-
   labels:
     app.kubernetes.io/component: primary
@@ -13,7 +11,6 @@ metadata:
     helm.sh/chart: mariadb-11.4.5
     statefulset.kubernetes.io/pod-name: wordpress-mariadb-0
   name: wordpress-mariadb-0
-  uid: 446165bc-5eae-4c93-8c07-65f16f4c83fa
   namespace: nswordpress
   ownerReferences:
   - apiVersion: apps/v1
@@ -135,40 +132,3 @@ spec:
       defaultMode: 420
       name: wordpress-mariadb
     name: config
-status:
-  conditions:
-  - lastProbeTime: null
-    lastTransitionTime: "2023-02-06T20:34:52Z"
-    status: "True"
-    type: Initialized
-  - lastProbeTime: null
-    lastTransitionTime: "2023-02-06T20:35:53Z"
-    status: "True"
-    type: Ready
-  - lastProbeTime: null
-    lastTransitionTime: "2023-02-06T20:35:53Z"
-    status: "True"
-    type: ContainersReady
-  - lastProbeTime: null
-    lastTransitionTime: "2023-02-06T20:34:52Z"
-    status: "True"
-    type: PodScheduled
-  containerStatuses:
-  - containerID: containerd://6c4b5fdbfd178071c55dca1aa950b9fae88d33073684ed517da98f117ad37fd0
-    image: docker.io/bitnami/mariadb:10.6.11-debian-11-r22
-    imageID: docker.io/bitnami/mariadb@sha256:3daf524619055f29fe16efb7bd903c3dc0ac5a9e6f21c0bde3771381e2c5b1fa
-    lastState: {}
-    name: mariadb
-    ready: true
-    restartCount: 0
-    started: true
-    state:
-      running:
-        startedAt: "2023-02-06T20:35:21Z"
-  hostIP: 10.10.0.7
-  phase: Running
-  podIP: 10.200.4.3
-  podIPs:
-  - ip: 10.200.4.3
-  qosClass: BestEffort
-  startTime: "2023-02-06T20:34:52Z"
