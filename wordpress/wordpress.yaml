@@ -141,3 +141,14 @@ metadata:
 data:
   password: cGFzc3dvcmQ=
 type: Opaque
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-pass
+  namespace: default
+data:
+  password: cGFzc3dvcmQ=
+type: Opaque
