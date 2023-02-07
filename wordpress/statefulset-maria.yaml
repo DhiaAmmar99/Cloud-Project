@@ -4,7 +4,6 @@ metadata:
   annotations:
     meta.helm.sh/release-name: wordpress
     meta.helm.sh/release-namespace: nswordpress
-  creationTimestamp: "2023-02-06T20:34:46Z"
   generation: 1
   labels:
     app.kubernetes.io/component: primary
@@ -14,8 +13,6 @@ metadata:
     helm.sh/chart: mariadb-11.4.5
   name: wordpress-mariadb
   namespace: nswordpress
-  resourceVersion: "214463"
-  uid: 446165bc-5eae-4c93-8c07-65f16f4c83fa
 spec:
   podManagementPolicy: OrderedReady
   replicas: 1

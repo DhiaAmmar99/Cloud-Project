@@ -3,7 +3,6 @@ kind: Pod
 metadata:
   annotations:
     checksum/configuration: 21c96e22113bfda5980c711c981ef520624409c5e3e04bdff1d790d4d1799dce
-  creationTimestamp: "2023-02-06T20:34:47Z"
   generateName: wordpress-mariadb-
   labels:
     app.kubernetes.io/component: primary
@@ -21,9 +20,6 @@ metadata:
     controller: true
     kind: StatefulSet
     name: wordpress-mariadb
-    uid: 446165bc-5eae-4c93-8c07-65f16f4c83fa
-  resourceVersion: "214460"
-  uid: 0b280771-f50f-4093-a92f-a24a0790c98f
 spec:
   affinity:
     podAntiAffinity:

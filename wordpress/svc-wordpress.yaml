@@ -4,7 +4,6 @@ metadata:
   annotations:
     meta.helm.sh/release-name: wordpress
     meta.helm.sh/release-namespace: nswordpress
-  creationTimestamp: "2023-02-06T20:34:46Z"
   finalizers:
   - service.kubernetes.io/load-balancer-cleanup
   labels:
@@ -14,8 +13,6 @@ metadata:
     helm.sh/chart: wordpress-15.2.37
   name: wordpress
   namespace: nswordpress
-  resourceVersion: "214225"
-  uid: 60010ece-c2b2-457f-90af-883ce9637462
 spec:
   allocateLoadBalancerNodePorts: true
   clusterIP: 10.203.250.165
