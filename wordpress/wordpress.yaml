@@ -65,6 +65,14 @@ spec:
           claimName: mysql-pv-claim
 ---
 apiVersion: v1
+kind: Secret
+metadata:
+- name: mysql-pass
+  literals:
+  - password=dhia
+---
+
+apiVersion: v1
 kind: Service
 metadata:
   name: wordpress
