@@ -131,3 +131,13 @@ spec:
       - name: wordpress-persistent-storage
         persistentVolumeClaim:
           claimName: wp-pv-claim
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: root-pass
+  namespace: default
+data:
+  password: cGFzc3dvcmQ=
+type: Opaque
