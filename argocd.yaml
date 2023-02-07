@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/DhiaAmmar99/Cloud-Project.git
+    targetRevision: HEAD
+    path: wordpress
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: app-cd
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      selfHeal: true
+      purne: true
+
