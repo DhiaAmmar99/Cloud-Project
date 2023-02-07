@@ -13,6 +13,7 @@ metadata:
     helm.sh/chart: mariadb-11.4.5
     statefulset.kubernetes.io/pod-name: wordpress-mariadb-0
   name: wordpress-mariadb-0
+  uid: 446165bc-5eae-4c93-8c07-65f16f4c83fa
   namespace: nswordpress
   ownerReferences:
   - apiVersion: apps/v1
