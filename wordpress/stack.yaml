@@ -1,8 +1,78 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-pass
+type: Opaque
+data:
+  password: YWRtaW4=
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wordpress-persistent-storage
+  labels:
+    app: wordpress
+    tier: frontend
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 172.31.39.63
+    # Exported path of your NFS server
+    path: "/html"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-persistent-storage
+  labels:
+    app: wordpress
+    tier: mysql
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 172.31.39.63
+    # Exported path of your NFS server
+    path: "/mysql"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wordpress-persistent-storage
+  labels:
+    app: wordpress
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 6Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-persistent-storage
+  labels:
+    app: wordpress
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 6Gi
+---
 apiVersion: v1
 kind: Service
 metadata:
-name: wordpress-mysql
-  labels:
+  name: wordpress-mysql   # will be used as a value in
+  labels:                 # WORDPRESS_DB_HOST in wordpress-deploy.yml
     app: wordpress
 spec:
   ports:
@@ -12,21 +82,7 @@ spec:
     tier: mysql
   clusterIP: None
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mysql-pv-claim
-  labels:
-    app: wordpress
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: local-storage
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: apps/v1
+apiVersion:  apps/v1beta2 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
   name: wordpress-mysql
@@ -37,7 +93,6 @@ spec:
     matchLabels:
       app: wordpress
       tier: mysql
-  replicas: 1
   strategy:
     type: Recreate
   template:
@@ -47,41 +102,26 @@ spec:
         tier: mysql
     spec:
       containers:
-      - image: mysql:5.7
-        imagePullPolicy: IfNotPresent
+      - image: mysql:5.6
         name: mysql
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: root-pass
+              name: mysql-pass        # the one generated before in secret.yml
               key: password
-
-        - name: MYSQL_DATABASE
-          value: mysql
-
-        - name: MYSQL_USER
-          value: mysql
-
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-pass
-              key: password
-
         ports:
         - containerPort: 3306
           name: mysql
         volumeMounts:
-        - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
-      nodeSelector:
-        storage: local
+        - name: mysql-persistent-storage  # which data will be stored
+          mountPath: "/var/lib/mysql"
       volumes:
-      - name: mysql-persistent-storage
+      - name: mysql-persistent-storage    # PVC
         persistentVolumeClaim:
-          claimName: mysql-pv-claim
+          claimName: mysql-persistent-storage
 ---
+# create a service for wordpress
 apiVersion: v1
 kind: Service
 metadata:
@@ -94,25 +134,8 @@ spec:
   selector:
     app: wordpress
     tier: frontend
-  type: LoadBalancer
-  externalIPs:
-  - 192.168.1.83
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: wp-pv-claim
-  labels:
-    app: wordpress
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: local-storage
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: apps/v1
+  type: ClusterIP---
+apiVersion: apps/v1beta2 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
   name: wordpress
@@ -123,7 +146,6 @@ spec:
     matchLabels:
       app: wordpress
       tier: frontend
-  replicas: 1
   strategy:
     type: Recreate
   template:
@@ -133,52 +155,23 @@ spec:
         tier: frontend
     spec:
       containers:
-      - image: wordpress
+      - image: wordpress:4.8-apache
         name: wordpress
-        imagePullPolicy: IfNotPresent
-
         env:
         - name: WORDPRESS_DB_HOST
           value: wordpress-mysql
-
         - name: WORDPRESS_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-pass
+              name: mysql-pass          # generated before in secret.yml
               key: password
-
-        - name: WORDPRESS_DB_USER
-          value: mysql
-
-        - name: WORDPRESS_DB_NAME
-          value: mysql
-
         ports:
         - containerPort: 80
           name: wordpress
         volumeMounts:
         - name: wordpress-persistent-storage
-          mountPath: /var/www/html
-      nodeSelector:
-        storage: local
+          mountPath: "/var/www/html"          # which data will be stored
       volumes:
       - name: wordpress-persistent-storage
         persistentVolumeClaim:
-          claimName: wp-pv-claim
-apiVersion: v1
-kind: Secret
-metadata:
-  name: root-pass
-  namespace: default
-data:
-  password: cGFzc3dvcmQ=
-type: Opaque
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: mysql-pass
-  namespace: default
-data:
-  password: cGFzc3dvcmQ=
-type: Opaque
+          claimName: wordpress-persistent-storage
