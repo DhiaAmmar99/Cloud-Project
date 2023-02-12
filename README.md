@@ -1,24 +1,16 @@
 # Cloud Project  GCP, Terraform and Argocd
 
+In this project we aim automate the deployment of a **Kubernetes** cluster on gcp with **Terraform**, after that we will deploy **Wordpress** with **helm** ( with 2 different ways using a bitnami repo & and by ceating our on chart).The last step is to automte the deployment with **ArgoCD**.
 
-In this project we aim automate the deployment of a **Kubernetes** cluster on gcp with **Terraform**, after that we will deploy **Wordpress** with **helm** ( with 2 different ways using a bitnami repo & and with own repo ) the last step is to deploy with one command thanks to  **ArgoCD**.
-
-## TASWSIRAA
-
-![Dhia pic text](pic/admin.PNG)
-
-
-
-
-
+![Alt text](pic/Simple%20Archi.png)
 
 ## Prerequisite
-
  - GCP Account
  - Google cloud cli installed 
  - Terraform installed
-## Let's get to work
-###  Deploy VPC, Subnet and K8S Cluster with Terraform :
+
+## Let's get started
+### 1- Deploy VPC, Subnet and K8S Cluster with Terraform :
 First step is to set the project property in the core section, run:
 
     gcloud config set project <PROJECT_ID>
@@ -45,7 +37,8 @@ Expected output
         region = "us-central1"
 Now that we provisined GKE cluster, we need to configure kubectl:  
   
-    gcloud container clusters get-credentials $(terraform output -raw kubernetes_cluster_name) --region $(terraform output -raw kubernetes_cluster_name)
+    gcloud container clusters get-credentials cloud-project-376908-gke --region us-central1 --project cloud-project-376908
+
 
 Expected output
 
@@ -55,7 +48,7 @@ Expected output
 In this step we have a K8s Cluster with Kubectl we still need to [install Helm](https://helm.sh/docs/intro/install/).
 
 
-###  Deploy Wordpress with Bitnami Repo : 
+### 2- Deploy Wordpress with Bitnami Repo : 
 
 First method i will use bitanmi repo for that we use the following command :
 
@@ -125,15 +118,17 @@ We are almost there we just need to run the commands that we saved from last ste
     echo "WordPress Admin URL: http://$SERVICE_IP/admin"
     
 
-
 In this level everthing should be working fine ! all you have to do is to check URL.
 
-###  Create our own Chart for Wordpress : 
+![Alt text](pic/admin.PNG)
+
+
+### 3- Create our own Chart for Wordpress : 
 This method is also easy somehow thanks to helm but we will create our own k8s manifest.
-A chart is organized as a collection of files inside of a directory. Helm expects such structure
+A chart is organized as a collection of files inside of a directory. Helm expects such structure :
 
+![Alt text](pic/Helm%20Struc.PNG)
 
-## TASWSIRAA
 
 now that we have all the manfiest we can install using the command
 
@@ -144,7 +139,7 @@ To verify the website get ExternalIP from the following command
 
     kubectl get svc
     
-To delete everything :
+To delete everything 
 
     helm uninstall wordpress wordpress/
 
@@ -169,10 +164,15 @@ Password:
 
     kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
+
+![Alt text](pic/argo%20interface.PNG)
+
 Now we have Argocd, the last part is to deploy the Manfiest !
 
-kubectl apply -f argocd.yaml
+    kubectl apply -f argocd.yaml
+
+we can chechk ArgoCD interface and we find a new application created
 
 
-
+![Alt text](pic/argocd.PNG)
 
