@@ -145,11 +145,12 @@ To delete everything
 
   
 ###  ArgoCd Continuous Deployment
-That was too much of command, lets get the CD to make things even easier
+That was too much of command, lets get the CD to make things even easier.
 
 With the argocd.yaml manifest we wont have even to deploy anything, argocd will connect to our github repo and do everything for us for free. Also keep an eye on our project with comparing the Manifest from github with the state of the application.
-For example if we added a new deployment configuration in github argocd will automataclly dectect
-it and the new deployment.
+
+For example if we added a new deployment configuration in github argocd will automataclly dectect it and the new deployment.
+
 To install argocd on K8s :
 
     kubectl create namespace argocd
