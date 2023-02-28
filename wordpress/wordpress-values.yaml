@@ -1,8 +1,0 @@
-wordpressUsername: dhia
-wordpressPassword: dhia
-wordpressEmail: dhia@ammar.com
-wordpressFirstName: dhia
-wordpressLastName: ammar
-wordpressBlogName: dhia.com
-service:
-  type: LoadBalancer
